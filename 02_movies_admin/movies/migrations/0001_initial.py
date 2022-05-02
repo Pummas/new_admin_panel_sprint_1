@@ -106,7 +106,7 @@ class Migration(migrations.Migration):
             reverse_sql="DROP INDEX IF EXISTS film_work_genre_idx;"
         ),
         migrations.RunSQL(
-            sql="CREATE UNIQUE INDEX IF NOT EXISTS film_work_person_idx ON content.person_film_work (film_work_id, person_id);",
+            sql="CREATE UNIQUE INDEX IF NOT EXISTS film_work_person_idx ON content.person_film_work (film_work_id, person_id, role);",
             reverse_sql="DROP INDEX IF EXISTS film_work_person_idx;"
         ),
     ]
