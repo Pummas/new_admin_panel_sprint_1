@@ -1,4 +1,5 @@
 import sqlite3
+from logging import getLogger
 from postgres_dataclasses import FilmWork, Genre, Person, \
     GenreFilmwork, PersonFilmWork
 
@@ -6,17 +7,21 @@ from postgres_dataclasses import FilmWork, Genre, Person, \
 class SQLiteLoader:
     def __init__(self, connection):
         self._connection = connection
+        self._logger = getLogger()
 
     def get_data_sqlite(self, table: str):
         """Основной метод получения данных и таблиц SQLite"""
-        self._connection.row_factory = sqlite3.Row
-        _curs = self._connection.cursor()
-        _curs.execute(f"SELECT * FROM {table};")  # noqa: S608
-        data = _curs.fetchall()
-        return data
+        try:
+            self._connection.row_factory = sqlite3.Row
+            _curs = self._connection.cursor()
+            _curs.execute(f"SELECT * FROM {table};")  # noqa: S608
+            data = _curs.fetchall()
+            return data
+        except Exception as exception:
+            self._logger.error(exception)
 
     def load_filmworks(self, table: str):
-        """Выгрузка фильмов из SQLite"""
+        """Выгрузка фильмов из SQLite в dataclass"""
         data = self.get_data_sqlite(table)
         film_works = []
         for elem in data:
@@ -33,7 +38,7 @@ class SQLiteLoader:
         return film_works
 
     def load_genre(self, table: str):
-        """Выгрузка жанров из SQLite"""
+        """Выгрузка жанров из SQLite в dataclass"""
         data = self.get_data_sqlite(table)
         genres = []
         for elem in data:
@@ -47,7 +52,7 @@ class SQLiteLoader:
         return genres
 
     def load_person(self, table: str):
-        """Выгрузка актеров из SQLite"""
+        """Выгрузка актеров из SQLite в dataclass"""
         data = self.get_data_sqlite(table)
         persons = []
         for elem in data:
@@ -60,7 +65,8 @@ class SQLiteLoader:
         return persons
 
     def load_genre_filmwork(self, table: str):
-        """Выгрузка промежуточной таблицы жанров и фильмов из SQLite"""
+        """Выгрузка промежуточной таблицы жанров
+        и фильмов из SQLite в dataclass"""
         data = self.get_data_sqlite(table)
         genre_filmworks = []
         for elem in data:
@@ -73,7 +79,8 @@ class SQLiteLoader:
         return genre_filmworks
 
     def load_person_filmwork(self, table: str):
-        """Выгрузка промежуточной таблицы актеров и фильмов из SQLite"""
+        """Выгрузка промежуточной таблицы актеров
+        и фильмов из SQLite в dataclass"""
         data = self.get_data_sqlite(table)
         person_filmworks = []
         for elem in data:
