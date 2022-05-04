@@ -1,12 +1,19 @@
 import uuid
+
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class FilmworkTypeChoices(models.TextChoices):
-    movie = 'MVE'
-    tw_show = 'TWS'
+    movie = 'movie'
+    tw_show = 'tw_show'
+
+
+class PersonRoleChoices(models.TextChoices):
+    actor = 'actor'
+    director = 'director'
+    writer = 'writer'
 
 
 class TimeStampedMixin(models.Model):
@@ -67,6 +74,7 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
         db_table = "content\".\"film_work"
         verbose_name = _('Film work')
         verbose_name_plural = _('Film works')
+        index_together = ["creation_date", "rating"]
 
     def __str__(self):
         return self.title
@@ -79,13 +87,18 @@ class GenreFilmwork(UUIDMixin):
 
     class Meta:
         db_table = "content\".\"genre_film_work"
+        unique_together = ["film_work", "genre"]
 
 
 class PersonFilmWork(UUIDMixin):
     film_work = models.ForeignKey('Filmwork', on_delete=models.CASCADE)
     person = models.ForeignKey('Person', on_delete=models.CASCADE)
-    role = models.TextField(_('role'), null=True)
+    role = models.TextField(_('role'),
+                            choices=PersonRoleChoices.choices,
+                            null=True
+                            )
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "content\".\"person_film_work"
+        unique_together = ["film_work", "person", "role"]

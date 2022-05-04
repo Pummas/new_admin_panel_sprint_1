@@ -1,14 +1,16 @@
 import os
-from postres_saver import PostgresSaver
-from sqlite_loader import SQLiteLoader
-import psycopg2
-from psycopg2.extensions import connection as _connection
 import sqlite3
+from logging import getLogger
+
+import psycopg2
 from dotenv import load_dotenv
+from psycopg2.extensions import connection as _connection
+from psycopg2.extras import DictCursor
+
 from postgres_dataclasses import FilmWork, Genre, PersonFilmWork, \
     Person, GenreFilmwork
-from logging import getLogger
-from psycopg2.extras import DictCursor
+from postres_saver import PostgresSaver
+from sqlite_loader import SQLiteLoader
 
 load_dotenv()
 

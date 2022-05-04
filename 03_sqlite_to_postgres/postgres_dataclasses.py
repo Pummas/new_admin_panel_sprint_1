@@ -1,6 +1,6 @@
+import datetime
 import uuid
 from dataclasses import dataclass, field
-import datetime
 
 
 @dataclass

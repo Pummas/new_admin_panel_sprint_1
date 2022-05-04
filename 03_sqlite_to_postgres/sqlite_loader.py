@@ -1,5 +1,6 @@
 import sqlite3
 from logging import getLogger
+
 from postgres_dataclasses import FilmWork, Genre, Person, \
     GenreFilmwork, PersonFilmWork
 

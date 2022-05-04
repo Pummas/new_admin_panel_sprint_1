@@ -1,10 +1,12 @@
+import datetime
 import os
 import sqlite3
+
 import psycopg2
 import pytest
-from psycopg2.extras import DictCursor
 from dotenv import load_dotenv
-import datetime
+from psycopg2.extras import DictCursor
+
 import postgres_dataclasses
 
 load_dotenv()

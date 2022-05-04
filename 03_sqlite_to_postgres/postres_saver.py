@@ -1,7 +1,8 @@
-import psycopg2
-from psycopg2.extras import execute_values
 from dataclasses import astuple, fields
 from logging import getLogger
+
+import psycopg2
+from psycopg2.extras import execute_values
 
 
 class PostgresSaver:
