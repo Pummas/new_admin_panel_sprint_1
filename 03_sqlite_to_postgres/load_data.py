@@ -21,25 +21,16 @@ def load_from_sqlite(connection: sqlite3.Connection,
     try:
         postgres_saver = PostgresSaver(pg_conn)
         sqlite_loader = SQLiteLoader(connection)
-        film_works = sqlite_loader.load_filmworks('film_work')
-        genres = sqlite_loader.load_genre('genre')
-        persons = sqlite_loader.load_person('person')
-        genres_film_works = sqlite_loader.load_genre_filmwork(
-            'genre_film_work'
-        )
-        person_film_works = sqlite_loader.load_person_filmwork(
-            'person_film_work'
-        )
         data = {
-            'film_work': [film_works, FilmWork],
-            'genre': [genres, Genre],
-            'person': [persons, Person],
-            'genre_film_work': [genres_film_works, GenreFilmwork],
-            'person_film_work': [person_film_works, PersonFilmWork],
+            'film_work': FilmWork,
+            'genre': Genre,
+            'person': Person,
+            'genre_film_work': GenreFilmwork,
+            'person_film_work': PersonFilmWork,
         }
         for key, value in data.items():
-            postgres_saver.save_all_data(key, value[0], value[1])
-        return data
+            insert_data = sqlite_loader.format_dataclass_data(key, value)
+            postgres_saver.save_all_data(key, insert_data, value)
     except Exception as exception:
         logger.error(exception)
 
@@ -56,3 +47,5 @@ if __name__ == '__main__':
     with sqlite3.connect(os.environ.get('DB_FILE')) as sqlite_conn, \
             psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
         load_from_sqlite(sqlite_conn, pg_conn, logger)
+    sqlite_conn.close()
+    pg_conn.close()
