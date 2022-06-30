@@ -11,13 +11,13 @@ class PostgresSaver:
         self._cursor = self._connection.cursor()
         self._logger = getLogger()
 
-    def save_all_data(self, talbe_name, data, dataclass):
+    def save_all_data(self, table_name, data, dataclass):
         """Метод сохранения данных в таблицу PostgreSQL"""
         try:
             keys = ", ".join(field.name for field in fields(dataclass))
             execute_values(
                 self._cursor,
-                f"""INSERT INTO content.{talbe_name} ({keys})
+                f"""INSERT INTO content.{table_name} ({keys})
                 VALUES %s ON CONFLICT (id) DO NOTHING;""",
                 [astuple(row) for row in data])
         except Exception as exception:

@@ -6,9 +6,9 @@ from dataclasses import dataclass, field
 @dataclass
 class FilmWork:
     title: str
-    creation_date: datetime.date
     created: datetime.datetime
     modified: datetime.datetime
+    creation_date: datetime.date = field(default=datetime.datetime.now())
     type: str = field(default="")
     description: str = field(default="")
     rating: float = field(default=0.0)
